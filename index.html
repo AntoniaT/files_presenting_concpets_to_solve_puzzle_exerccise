@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Puzzle</title>
+    <style>
+        #container{
+            display:grid;
+            background-color: beige;
+
+        }
+        .box{
+            outline : 0.5px solid grey;
+            z-index : 100;
+
+        }
+        img{
+            width: 400px;
+        }
+        #draggable {
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            background: red;
+            position: absolute;
+        }
+
+        .dropzone {
+            width: 200px;
+            height: 20px;
+            background-color: aqua;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        </style>
+</head>
+<body class="theBody">
+    <!--FORM-->
+    <form id="myForm">
+    <input type="url" name="imgLink" id="url"></input>
+    <input type="number" name="x" id="x">
+    <input type="number" name="y" id="y">
+
+    <input type="submit" value="Make a puzzle">
+    </form>
+
+    <!--CONTAINER-->
+    <!--<div id="container"></div>-->
+
+    <img src="" alt="puzzle image">
+
+    
+    <!--DRAG AND DROP ZONE-->
+    <div id="container"></div>
+
+    <!-- <div class="dropzone"> -->
+        <!-- <div id="draggable" draggable="true" ondragstart="event.dataTransfer.setData('text/plain',null)">DRAGGABLE Shit</div> -->
+<!--     </div>
+    <div class="dropzone"></div>
+    <div class="dropzone"></div>
+    <div class="dropzone"></div> -->
+    <div id="itemsHolder"></div>
+
+
+
+    <script>
+      // for builing purpose I have the image here
+      //const imgAdress = "https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg";
+      let imageAdress = "";
+     
+     // let the DOM load
+      document.addEventListener("DOMContentLoaded", startScript);
+
+      function startScript(){
+          document.querySelector("#myForm").addEventListener("submit", loadImage)
+              console.log("starting");    
+      }
+      // load the image first after submit
+      function loadImage (event){
+          event.preventDefault();
+
+          document.querySelector("img").src = imageAdress;
+          imageAdress = document.querySelector("#url").value;
+      }
+
+      //loadImage();  
+
+    // make the grid
+      let numOfXBoxes = 3;
+      let numOfYBoxes = 3;
+      let container_width = 400;
+      let container_height = 400;
+
+    function createGrid(){
+    document.querySelector("#container").style.gridTemplateColumns = `repeat(${numOfXBoxes}, 1fr)`;
+    document.querySelector("#container").style.width = `${container_width}px`;
+    
+    for (let y = 0; y < numOfYBoxes; y++){
+        for (let x = 0; x < numOfXBoxes; x++){
+
+            let box = document.createElement("div");
+
+            box.style.height = (container_height / numOfYBoxes) + "px";
+            box.textContent =  `${x}${y}`;
+            box.dataset.dropid= `d${x}${y}`;
+            box.classList.add("box");
+            document.querySelector("#container").appendChild(box);
+        }
+    }}
+    createGrid();
+
+    // PUT IMAGE ON DRAGGABLE BOXES
+    function createImagePieces(){
+
+    let itemsHolder = document.querySelector("#itemsHolder");
+
+    for (let i = 0; i < numOfYBoxes ; i++) {
+    for (let x = 0; x < numOfXBoxes; x++){
+
+     let item = document.createElement("div");
+
+      item.classList.add("item");
+      item.draggable = true;
+      item.style.height = (container_height / numOfYBoxes) + "px";
+      item.style.width = (container_width / numOfXBoxes) + "px";
+      item.dataset.dropid= `d${x}${y}`; /* not sure if this is right yet */
+      item.style.backgroundColor = "gray";
+      item.style.margin = 2 + "em";
+   //item.style.position = "absolute";
+     itemsHolder.appendChild(item);
+     console.log("I show something");
+      }}  }
+      createImagePieces();
+     
+/*      for(i= 0; i < item.length; i++){
+         item.style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')"
+     } */
+
+     // PUT THE IMAGE INTO THE PIECES -- WORKAROUND
+     function putImageOnPieces(){
+     itemsHolder.children[1].style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')";
+     itemsHolder.children[1].style.backgroundSize = "400px 300px";
+     itemsHolder.children[1].style.backgroundPosition = "0% 0%";
+     itemsHolder.children[2].style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')";
+     itemsHolder.children[2].style.backgroundSize = "400px 300px";
+     itemsHolder.children[2].style.backgroundPosition = "133.333px 0%";
+     itemsHolder.children[3].style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')";
+     itemsHolder.children[3].style.backgroundSize = "400px 300px";
+     itemsHolder.children[3].style.backgroundPosition = "266.666px 0%";
+     itemsHolder.children[4].style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')";
+     itemsHolder.children[4].style.backgroundSize = "400px 300px";
+     itemsHolder.children[4].style.backgroundPosition = "0px 133.333px";
+     itemsHolder.children[5].style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')";
+     itemsHolder.children[5].style.backgroundSize = "400px 300px";
+     itemsHolder.children[5].style.backgroundPosition = "133.333px 266.666px";    
+     itemsHolder.children[6].style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')";
+     itemsHolder.children[6].style.backgroundSize = "400px 300px";
+     itemsHolder.children[6].style.backgroundPosition = "266.666px 266.666px";    
+     itemsHolder.children[7].style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')";
+     itemsHolder.children[7].style.backgroundSize = "400px 300px";
+     itemsHolder.children[7].style.backgroundPosition = "0px 399.999px";    
+     itemsHolder.children[8].style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')";
+     itemsHolder.children[8].style.backgroundSize = "400px 300px";
+     itemsHolder.children[8].style.backgroundPosition = "0px 133.333px";    
+     itemsHolder.children[0].style.backgroundImage = "url('https://www.rd.com/wp-content/uploads/2016/04/sloths-slide1SamTrull.jpg')";
+     itemsHolder.children[0].style.backgroundSize = "400px 400px";
+     itemsHolder.children[0].style.backgroundPosition = "399.999p 399.999p";
+
+
+     }
+     putImageOnPieces();  
+    
+    // PUT THE PIECES INTO A RANDOM ORDER
+    function setPiecesRandomly(){
+     document.querySelectorAll(".item").forEach(eachItem => {
+
+     eachItem.style.position = "absolute";
+     eachItem.style.left = `${Math.random()*500 + 250}px`;
+     eachItem.style.top = `${Math.random()*500 + 250}px`;
+     });
+     }
+    setPiecesRandomly();
+
+
+
+    // DRAG ANND DROP
+
+    let dragged;
+
+      document.addEventListener("drag", function(event) {
+
+     });  
+     document.addEventListener("dragstart", function(event) {
+            // store a ref. on the dragged elem
+            dragged = event.target;
+            // make it half transparent
+            event.target.style.opacity = .5;
+        });
+    
+    document.addEventListener("dragend", function(event) {
+            // reset the transparency
+            event.target.style.opacity = "";
+        });
+
+    /* events fired on the drop targets */
+     document.addEventListener("dragover", function(event) {
+    // prevent default to allow drop
+            event.preventDefault();
+        }); 
+    
+    document.addEventListener("drop", function(event) {
+     // prevent default action (open as link for some elements)
+            event.preventDefault();
+            console.log("DROP" ,event.target.className)
+    // move dragged elem to the selected drop target
+            if (event.target.className == "box") {
+                event.target.style.background = "";
+                dragged.parentNode.removeChild(dragged);
+                event.target.appendChild(dragged);
+                dragged.style.left = event.target.style.left;
+                dragged.style.top = event.target.style.top;
+                //dragged.style.width = event.target.width;
+            }else if(event.target.className == "theBody"){
+    // park the dragged elem somewhere on the body
+                dragged.style.left = event.pageX+ "px";
+                dragged.style.top = event.pageY+ "px";
+
+             }
+
+        });
+
+
+    </script>
+</body>
+</html>
